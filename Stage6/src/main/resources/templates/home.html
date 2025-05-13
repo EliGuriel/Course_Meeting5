@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" th:href="@{/css/modal.css}" />
+  <link rel="stylesheet" th:href="@{/css/home.css}" />
+  <!-- JavaScript -->
+  <script th:src="@{/js/modal.js}" defer></script>
+</head>
+<body>
+<div class="home-container">
+  <!-- User Welcome Section -->
+  <header>
+    <h2 sec:authentication="name">Welcome, User!</h2>
+
+    <h3>Your roles are:
+      <span th:each="auth, iterStat : ${#authentication.principal.authorities}"
+            th:text="${#strings.replace(auth, 'ROLE_', '') + (!iterStat.last ? ', ' : '')}">
+            </span>
+    </h3>
+  </header>
+
+  <!-- Navigation Section -->
+  <section class="navigation">
+    <!-- Admin Button - only visible for users with ADMIN role -->
+    <div class="button-container" sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/admin/dashboard}" class="admin-button">Admin Dashboard</a>
+    </div>
+
+    <!-- Logout Button - triggers the modal dialog -->
+    <button id="logoutBtn" class="logout-button">Logout</button>
+  </section>
+
+  <!-- Logout Modal Dialog -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout Confirmation</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-buttons">
+        <form th:action="@{/logout}" method="post" id="logoutForm">
+          <button type="button" id="cancelBtn" class="cancel-button">Cancel</button>
+          <button type="submit" class="confirm-button">Yes, Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

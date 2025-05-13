@@ -1,0 +1,21 @@
+/**
+ * CSS File Structure Recommendation
+ * 
+ * 1. common.css - Base styles, shared components, typography, etc.
+ * 2. layout.css - Layout structure, grids, containers, etc.
+ * 3. components/ - Directory for component-specific styles
+ *    - forms.css - All form-related styles
+ *    - tables.css - All table-related styles
+ *    - modal.css - Modal dialog styles
+ *    - buttons.css - Button styles
+ * 4. pages/ - Directory for page-specific styles
+ *    - login.css - Login page styles
+ *    - admin.css - Admin pages styles
+ *    - home.css - Home page styles
+ * 
+ * This structure promotes:
+ * - Better code organization
+ * - Easier maintenance
+ * - Reusability of components
+ * - Clearer responsibility for each file
+ */

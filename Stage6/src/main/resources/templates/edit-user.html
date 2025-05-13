@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he" dir="rtl">
+<head>
+    <title>עריכת משתמש</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+</head>
+<body>
+<div class="container">
+    <!-- Page Header -->
+    <h1>עריכת משתמש</h1>
+
+    <!-- Error Message Display -->
+    <div th:if="${error}" class="error-message" th:text="${error}">
+        הודעת שגיאה
+    </div>
+
+    <!-- User Edit Form -->
+    <form th:action="@{'/admin/edit-user/' + ${userDto.username}}" method="post" th:object="${userDto}">
+        <!-- Hidden Username Field -->
+        <input type="hidden" name="username" th:field="*{username}">
+
+        <!-- Username Display (read-only) -->
+        <div class="form-group">
+            <label>שם משתמש:</label>
+            <div th:text="*{username}" class="form-field-display">שם משתמש</div>
+        </div>
+
+        <!-- New Password Field -->
+        <div class="form-group">
+            <label for="password">סיסמה חדשה (השאר ריק כדי לשמור את הסיסמה הנוכחית):</label>
+            <input type="password" id="password" name="password" th:field="*{password}">
+        </div>
+
+        <!-- Roles Selection -->
+        <div class="form-group">
+            <label>תפקידים:</label>
+            <div class="checkbox-group">
+                <div th:each="role : ${availableRoles}" class="checkbox-item">
+                    <input type="checkbox" th:id="${'role-' + role.getName()}"
+                           name="roles" th:value="${role.getName()}"
+                           th:checked="${#lists.contains(userRoles, role.getName())}">
+                    <label th:for="${'role-' + role.getName()}"
+                           th:text="${role.getName()}">תפקיד</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="button-group">
+            <a th:href="@{/admin/dashboard}" class="cancel-button">ביטול</a>
+            <button type="submit" class="submit-button">עדכן משתמש</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

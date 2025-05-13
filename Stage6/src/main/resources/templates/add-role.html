@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he" dir="rtl">
+<head>
+    <title>הוספת תפקיד חדש</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+</head>
+<body>
+<div class="container">
+    <!-- Page Header -->
+    <h1>הוספת תפקיד חדש</h1>
+
+    <!-- Error Message Display -->
+    <div th:if="${error}" class="error-message" th:text="${error}">
+        הודעת שגיאה
+    </div>
+
+    <!-- Role Form -->
+    <form th:action="@{/admin/add-role}" method="post" th:object="${roleDto}">
+        <!-- Role Name Field -->
+        <div class="form-group">
+            <label for="roleName">שם תפקיד:</label>
+            <input type="text" id="roleName" name="roleName" th:field="*{roleName}"
+                   required minlength="2" maxlength="50">
+            <!-- Hint for user -->
+            <div class="hint">שם התפקיד יומר אוטומטית לאותיות גדולות</div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="button-group">
+            <a th:href="@{/admin/dashboard}" class="cancel-button">ביטול</a>
+            <button type="submit" class="submit-button">הוסף תפקיד</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

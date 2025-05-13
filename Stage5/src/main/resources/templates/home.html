@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Home</title>
+  <link rel="stylesheet" th:href="@{/css/stylesheet.css}" />
+</head>
+<body>
+<div class="home-container">
+  <!-- Welcome Message -->
+  <h2 th:text="'Welcome, ' + ${#authentication.getName()} + '!'">Welcome, User!</h2>
+
+  <!-- Logout Button -->
+  <!-- Logout Button -->
+  <form th:action="@{/logout}" method="post">
+    <button type="submit" class="logout-button">Logout</button>
+  </form>
+
+</div>
+</body>
+</html>

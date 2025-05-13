@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he" dir="rtl">
+<head>
+    <title>הוספת משתמש חדש</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+</head>
+<body>
+<div class="container">
+    <!-- Page Header -->
+    <h1>הוספת משתמש חדש</h1>
+
+    <!-- Error Message Display -->
+    <div th:if="${error}" class="error-message" th:text="${error}">
+        הודעת שגיאה
+    </div>
+
+    <!-- User Form -->
+    <form th:action="@{/admin/add-user}" method="post" th:object="${userDto}">
+        <!-- Username Field -->
+        <div class="form-group">
+            <label for="username">שם משתמש:</label>
+            <input type="text" id="username" name="username" th:field="*{username}"
+                   required minlength="3" maxlength="50">
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+            <label for="password">סיסמה:</label>
+            <input type="password" id="password" name="password" th:field="*{password}"
+                   required minlength="3" maxlength="50">
+        </div>
+
+        <!-- Roles Selection -->
+        <div class="form-group">
+            <label>תפקידים:</label>
+            <div class="checkbox-group">
+                <div th:each="role : ${availableRoles}" class="checkbox-item">
+                    <input type="checkbox" th:id="${'role-' + role.getName()}"
+                           name="roles" th:value="${role.getName()}">
+                    <label th:for="${'role-' + role.getName()}"
+                           th:text="${role.getName()}">תפקיד</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="button-group">
+            <a th:href="@{/admin/dashboard}" class="cancel-button">ביטול</a>
+            <button type="submit" class="submit-button">הוסף משתמש</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

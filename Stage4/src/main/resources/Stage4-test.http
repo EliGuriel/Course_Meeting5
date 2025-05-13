@@ -1,0 +1,59 @@
+### Shared Environment
+@host = localhost:8080
+
+### Step 1: לוגין כ-admin
+POST {{host}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=admin
+
+
+### Step 2: יצירת משתמשים חדשים (דורש הרשאת admin - כבר מחובר מהלוגין למעלה)
+POST {{host}}/register
+Content-Type: application/json
+
+{
+  "username": "regular_user",
+  "password": "user123",
+  "roles": ["user"]
+}
+
+
+### Step 3: התנתקות מהאדמין
+GET {{host}}/logout
+
+### Step 6: לוגין כמשתמש רגיל
+POST {{host}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=regular_user&password=user123
+
+### Step 7: ניסיון ליצור role (ייבלם - משתמש רגיל לא יכול)
+POST {{host}}/role
+Content-Type: application/json
+
+{
+  "roleName": "manger"
+}
+
+### Step 8: ניסיון ליצור משתמש (ייבלם - רק admin יכול)
+POST {{host}}/register
+Content-Type: application/json
+
+{
+  "username": "blocked_user",
+  "password": "test123",
+  "roles": ["user"]
+}
+
+### Step 9: גישה מוגנת למשאבים שונים
+GET {{host}}/home
+
+###
+GET {{host}}/admin_home
+
+###
+GET {{host}}/status
+
+### Step 10: התנתקות
+GET {{host}}/logout

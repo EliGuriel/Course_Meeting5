@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="he" dir="rtl">
+<head>
+    <title>אישור מחיקה</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+</head>
+<body>
+<div class="container">
+    <!-- Page Header -->
+    <h1>אישור מחיקה</h1>
+
+    <!-- Confirmation Message - User Delete -->
+    <p th:if="${type == 'user'}" class="confirmation-message">
+        האם אתה בטוח שברצונך למחוק את המשתמש "<span th:text="${id}"></span>"?
+    </p>
+
+    <!-- Confirmation Message - Role Delete -->
+    <p th:if="${type == 'role'}" class="confirmation-message">
+        האם אתה בטוח שברצונך למחוק את התפקיד "<span th:text="${id}"></span>"?
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+        <!-- Cancel Button -->
+        <a th:href="@{/admin/dashboard}" class="cancel-button">ביטול</a>
+
+        <!-- User Delete Form -->
+        <form th:if="${type == 'user'}"
+              th:action="@{'/admin/delete-user/' + ${id} + '/confirm'}"
+              method="post" style="display:inline;">
+            <button type="submit" class="delete-button">מחק</button>
+        </form>
+
+        <!-- Role Delete Form -->
+        <form th:if="${type == 'role'}"
+              th:action="@{'/admin/delete-role/' + ${id} + '/confirm'}"
+              method="post" style="display:inline;">
+            <button type="submit" class="delete-button">מחק</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
