@@ -42,33 +42,33 @@
 
 ```
 org.example.stage6/
-├── controller/    # בקרים לטיפול בבקשות HTTP 
-│   ├── AdminController.java      # ניהול משתמשים ותפקידים
-│   ├── LoginController.java      # התחברות וניווט ראשי
-│   └── RoleController.java       # API לניהול תפקידים
-├── dto/           # אובייקטי העברת נתונים
-│   ├── RoleDto.java              # דגם לתפקיד
-│   └── UserDto.java              # דגם למשתמש
-├── entity/        # מודלי נתונים (JPA Entities)
-│   ├── Role.java                 # ישות תפקיד
-│   └── User.java                 # ישות משתמש
-├── exception/     # מחלקות חריגה מותאמות
-│   ├── GlobalExceptionHandler.java  # טיפול גלובאלי בחריגות
-│   ├── AdminExceptionHandler.java   # טיפול בחריגות אדמיניסטרטיביות
-│   └── InvalidRequestException.java  # חריגת בקשה לא תקינה
-├── repository/    # ממשקי גישה למסד הנתונים
-│   ├── RoleRepository.java       # שליפת תפקידים
-│   └── UserRepository.java       # שליפת משתמשים
-├── response/      # אובייקטי תגובה סטנדרטיים
-│   └── StandardResponse.java     # מבנה תשובה אחיד
-├── service/       # לוגיקה עסקית
-│   ├── CustomUserDetailsService.java # שירות פרטי משתמש לאבטחה
-│   ├── RoleService.java          # ממשק שירות תפקידים
-│   ├── RoleServiceImpl.java      # מימוש שירות תפקידים
-│   ├── UserService.java          # ממשק שירות משתמשים
-│   └── UserServiceImpl.java      # מימוש שירות משתמשים
-└── config/        # תצורות והגדרות
-    └── SecurityConfig.java       # תצורות אבטחה ואימות
+├── controller/    # Controllers for handling HTTP requests 
+│   ├── AdminController.java      # User and role management
+│   ├── LoginController.java      # Login and main navigation
+│   └── RoleController.java       # API for role management
+├── dto/           # Data Transfer Objects
+│   ├── RoleDto.java              # Role model
+│   └── UserDto.java              # User model
+├── entity/        # Data models (JPA Entities)
+│   ├── Role.java                 # Role entity
+│   └── User.java                 # User entity
+├── exception/     # Custom exception classes
+│   ├── GlobalExceptionHandler.java  # Global exception handling
+│   ├── AdminExceptionHandler.java   # Administrative exception handling
+│   └── InvalidRequestException.java  # Invalid request exception
+├── repository/    # Database access interfaces
+│   ├── RoleRepository.java       # Role retrieval
+│   └── UserRepository.java       # User retrieval
+├── response/      # Standard response objects
+│   └── StandardResponse.java     # Unified response structure
+├── service/       # Business logic
+│   ├── CustomUserDetailsService.java # Security user details service
+│   ├── RoleService.java          # Role service interface
+│   ├── RoleServiceImpl.java      # Role service implementation
+│   ├── UserService.java          # User service interface
+│   └── UserServiceImpl.java      # User service implementation
+└── config/        # Configurations and settings
+    └── SecurityConfig.java       # Security and authentication configurations
 ```
 
 <div dir="rtl">
@@ -82,7 +82,7 @@ org.example.stage6/
 
 ```mermaid
 graph TD
-    Client[דפדפן לקוח] --> Controller[Controller Layer]
+    Client[Client Browser] --> Controller[Controller Layer]
     Controller --> Service[Service Layer]
     Service --> Repository[Repository Layer]
     Repository --> Database[(Database)]
@@ -167,18 +167,18 @@ graph TD
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-        // הגנה מפני XSS, Clickjacking ו-CSP
+        // Protection against XSS, Clickjacking and CSP
         .headers(headers -> headers
             .contentSecurityPolicy(policy ->
                 policy.policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"))
             .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
         )
         
-        // הגנה מפני CSRF
+        // Protection against CSRF
         .csrf(csrf -> csrf
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             
-        // הגדרת הרשאות גישה
+        // Access permission settings
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
             .requestMatchers("/login").permitAll()
@@ -187,7 +187,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .anyRequest().authenticated()
         )
         
-        // הגדרת דף התחברות
+        // Login page configuration
         .formLogin(form -> form
             .loginPage("/login")
             .loginProcessingUrl("/login")
@@ -196,7 +196,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .permitAll()
         )
         
-        // הגדרת יציאה מהמערכת
+        // Logout configuration
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/login")
@@ -204,7 +204,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .permitAll()
         )
         
-        // הגנה מפני Session Fixation ו-Session Hijacking
+        // Protection against Session Fixation and Session Hijacking
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)
@@ -251,18 +251,18 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 ```mermaid
 graph TD
-    Request[בקשת HTTP] --> Controller[בקר]
-    Controller --> Service[שירות]
-    Service --> DB[(מסד נתונים)]
-    Service --חריגה--> Exception[חריגה מותאמת]
+    Request[HTTP Request] --> Controller[Controller]
+    Controller --> Service[Service]
+    Service --> DB[(Database)]
+    Service --Exception--> Exception[Custom Exception]
     
     Exception --> AdminHandler[AdminExceptionHandler]
     Exception --> GlobalHandler[GlobalExceptionHandler]
     
-    AdminHandler -- עדיפות גבוהה --> Response[תגובת HTTP]
-    GlobalHandler -- עדיפות נמוכה --> Response
+    AdminHandler -- High Priority --> Response[HTTP Response]
+    GlobalHandler -- Low Priority --> Response
     
-    Response --> Client[לקוח]
+    Response --> Client[Client]
 ```
 
 <div dir="rtl">
@@ -338,7 +338,7 @@ public class AdminExceptionHandler {
      */
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public String handleAccessDenied(Exception ex, Model model) {
-        model.addAttribute("error", "אין לך הרשאות לגשת לדף זה");
+        model.addAttribute("error", "You do not have permission to access this page");
         return "access-denied"; // Make sure this view template exists
     }
 }
@@ -402,20 +402,20 @@ public class GlobalExceptionHandler {
 
 ```mermaid
 graph TD
-    A[קלט משתמש בטופס] --> B[וולידציה בצד לקוח]
-    B --> C{תקין?}
-    C -- לא --> A
-    C -- כן --> D[שליחת טופס]
-    D --> E[וולידציה בשרת]
-    E --> F{תקין?}
-    F -- לא --> G[החזרת שגיאות לטופס]
+    A[User form input] --> B[Client-side validation]
+    B --> C{Valid?}
+    C -- No --> A
+    C -- Yes --> D[Form submission]
+    D --> E[Server-side validation]
+    E --> F{Valid?}
+    F -- No --> G[Return errors to form]
     G --> A
-    F -- כן --> H[המשך עיבוד הבקשה]
-    H --> I[טיפול בשגיאות עסקיות]
-    I --> J{תקין?}
-    J -- לא --> K[הצגת שגיאה]
+    F -- Yes --> H[Continue request processing]
+    H --> I[Business logic error handling]
+    I --> J{Valid?}
+    J -- No --> K[Display error]
     K --> A
-    J -- כן --> L[הצלחה]
+    J -- Yes --> L[Success]
 ```
 
 <div dir="rtl">
@@ -473,12 +473,12 @@ public String addUser(@Valid @ModelAttribute UserDto userDto,
                       Model model) {
 
     if (bindingResult.hasErrors()) {
-        // החזרת הדף עם שגיאות הוולידציה
+        // Return the page with validation errors
         model.addAttribute("availableRoles", roleService.getAllRoles());
         return "add-user";
     }
 
-    // המשך הלוגיקה אם אין שגיאות וולידציה...
+    // Continue with logic if no validation errors...
 }
 ```
 
@@ -497,12 +497,12 @@ Thymeleaf מספק תמיכה מובנית להצגת שגיאות וולידצ�
 
 ```html
 <div class="form-group">
-    <label for="password">סיסמה:</label>
+    <label for="password">Password:</label>
     <input type="password" id="password" name="password" th:field="*{password}" 
            required minlength="3" maxlength="50">
-    <!-- הצגת הודעת שגיאה ספציפית לשדה זה -->
+    <!-- Display specific error message for this field -->
     <div th:if="${#fields.hasErrors('password')}" class="error-message" 
-         th:errors="*{password}">שגיאת סיסמה</div>
+         th:errors="*{password}">Password Error</div>
 </div>
 ```
 
@@ -522,10 +522,10 @@ Thymeleaf מספק תמיכה מובנית להצגת שגיאות וולידצ�
 </div>
 
 ```html
-<!-- הצגת כל השגיאות בראש הטופס -->
+<!-- Display all errors at the top of the form -->
 <div th:if="${#fields.hasAnyErrors()}" class="error-summary">
     <ul>
-        <li th:each="err : ${#fields.allErrors()}" th:text="${err}">שגיאה</li>
+        <li th:each="err : ${#fields.allErrors()}" th:text="${err}">Error</li>
     </ul>
 </div>
 ```
@@ -540,7 +540,7 @@ Thymeleaf מספק תמיכה מובנית להצגת שגיאות וולידצ�
 ```java
 try {
     userService.registerUser(userDto);
-    redirectAttributes.addFlashAttribute("success", "המשתמש נוצר בהצלחה");
+    redirectAttributes.addFlashAttribute("success", "User created successfully");
     return "redirect:/admin/dashboard";
 } catch (InvalidRequestException e) {
     model.addAttribute("error", e.getMessage());
@@ -558,23 +558,23 @@ try {
 
 ```mermaid
 sequenceDiagram
-    participant User as משתמש
-    participant Browser as דפדפן
+    participant User
+    participant Browser
     participant Controller as Admin Controller
     participant Validator as Bean Validator
     
-    User->>Browser: הזנת סיסמה קצרה (2 תווים)
-    Browser->>Browser: הפעלת וולידציה בצד לקוח (HTML5)
-    alt וולידציה בצד לקוח
-        Browser-->>User: הצגת שגיאת HTML5 מובנית
-        User->>Browser: תיקון הקלט
-    else בלי וולידציה בצד לקוח או דפדפן לא תומך
-        Browser->>Controller: שליחת הטופס
-        Controller->>Validator: הפעלת @Valid על UserDto
-        Validator-->>Controller: החזרת שגיאת Size (min=3)
-        Controller->>Controller: בדיקת bindingResult.hasErrors()
-        Controller-->>Browser: החזרת הדף עם שגיאות בBindingResult
-        Browser-->>User: הצגת "password must be between 3 and 30 characters"
+    User->>Browser: Enter short password (2 chars)
+    Browser->>Browser: Activate client-side validation (HTML5)
+    alt Client-side validation
+        Browser-->>User: Display built-in HTML5 error
+        User->>Browser: Fix input
+    else No client-side validation or browser doesn't support
+        Browser->>Controller: Submit form
+        Controller->>Validator: Invoke @Valid on UserDto
+        Validator-->>Controller: Return Size error (min=3)
+        Controller->>Controller: Check bindingResult.hasErrors()
+        Controller-->>Browser: Return page with errors in BindingResult
+        Browser-->>User: Display "password must be between 3 and 30 characters"
     end
 ```
 
@@ -625,8 +625,8 @@ private String password;
 </div>
 
 ```properties
-user.password.required=סיסמה הינה שדה חובה
-user.password.size=סיסמה חייבת להכיל בין {min} ל-{max} תווים
+user.password.required=Password is a required field
+user.password.size=Password must contain between {min} and {max} characters
 ```
 
 <div dir="rtl">
@@ -685,22 +685,22 @@ user.password.size=סיסמה חייבת להכיל בין {min} ל-{max} תוו
 
 ```mermaid
 graph TD
-    Login[דף התחברות] --> Home[דף בית]
-    Home --> AdminHome[לוח בקרה למנהל]
-    AdminHome --> AddUser[הוספת משתמש]
-    AdminHome --> EditUser[עריכת משתמש]
-    AdminHome --> AddRole[הוספת תפקיד]
-    AdminHome --> DeleteUser[מחיקת משתמש]
-    AdminHome --> DeleteRole[מחיקת תפקיד]
+    Login[Login Page] --> Home[Home Page]
+    Home --> AdminHome[Admin Control Panel]
+    AdminHome --> AddUser[Add User]
+    AdminHome --> EditUser[Edit User]
+    AdminHome --> AddRole[Add Role]
+    AdminHome --> DeleteUser[Delete User]
+    AdminHome --> DeleteRole[Delete Role]
     AddUser --> AdminHome
     EditUser --> AdminHome
     AddRole --> AdminHome
     DeleteUser --> AdminHome
     DeleteRole --> AdminHome
-    Home --> LogoutModal[מודל התנתקות]
+    Home --> LogoutModal[Logout Modal]
     AdminHome --> LogoutModal
-    LogoutModal -- אישור --> Login
-    LogoutModal -- ביטול --> ReturnToPage[חזרה לדף נוכחי]
+    LogoutModal -- Confirm --> Login
+    LogoutModal -- Cancel --> ReturnToPage[Return to Current Page]
 ```
 
 <div dir="rtl">
@@ -734,38 +734,38 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant User as משתמש
-    participant Browser as דפדפן
+    participant User
+    participant Browser
     participant Controller as Login Controller
     participant Security as Spring Security
     participant Service as User Service
     participant Handlers as Exception Handlers
-    participant DB as מסד נתונים
+    participant DB as Database
     
-    User->>Browser: הזנת פרטי התחברות
-    Browser->>Controller: שליחת טופס התחברות
-    Controller->>Security: העברה לבדיקת אותנטיקציה
+    User->>Browser: Enter login credentials
+    Browser->>Controller: Submit login form
+    Controller->>Security: Pass for authentication
     
-    alt שגיאת אבטחה
-        Security->>Handlers: העברת חריגת אבטחה
-        Handlers->>Browser: הצגת שגיאת התחברות מותאמת
-        Browser->>User: הצגת הודעת שגיאה ידידותית
-    else בדיקת הרשאות
-        Security->>Service: בקשת פרטי משתמש
-        Service->>DB: שליפת נתוני משתמש
-        DB-->>Service: החזרת נתוני משתמש
-        Service-->>Security: פרטי משתמש + תפקידים
+    alt Security Error
+        Security->>Handlers: Pass security exception
+        Handlers->>Browser: Display custom login error
+        Browser->>User: Show user-friendly error message
+    else Check Permissions
+        Security->>Service: Request user details
+        Service->>DB: Fetch user data
+        DB-->>Service: Return user data
+        Service-->>Security: User details + roles
         
-        alt התחברות הצליחה
-            Security-->>Controller: אישור התחברות
-            Controller-->>Browser: הפניה לדף הבית
-        else התחברות נכשלה
-            Security-->>Controller: דחיית התחברות
-            Controller-->>Browser: חזרה לדף התחברות עם שגיאה
+        alt Login Successful
+            Security-->>Controller: Approve login
+            Controller-->>Browser: Redirect to home page
+        else Login Failed
+            Security-->>Controller: Reject login
+            Controller-->>Browser: Return to login page with error
         end
     end
     
-    Browser-->>User: הצגת התוצאה
+    Browser-->>User: Display result
 ```
 <div dir="rtl">
 
@@ -774,45 +774,45 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Admin as מנהל
-    participant Browser as דפדפן
+    participant Admin
+    participant Browser
     participant Controller as Admin Controller
     participant Service as User Service
     participant AdminHandler as AdminExceptionHandler
     participant GlobalHandler as GlobalExceptionHandler
-    participant DB as מסד נתונים
+    participant DB as Database
     
-    Admin->>Browser: מילוי טופס משתמש חדש
-    Browser->>Controller: שליחת נתוני משתמש
+    Admin->>Browser: Fill new user form
+    Browser->>Controller: Submit user data
     
-    alt שגיאות תיקוף
-        Controller->>Controller: בדיקת שגיאות תיקוף (Validation)
-        Controller-->>Browser: החזרת שגיאות תיקוף לטופס
-    else תיקוף תקין
-        Controller->>Service: בקשה ליצירת משתמש חדש
+    alt Validation Errors
+        Controller->>Controller: Check validation errors (Validation)
+        Controller-->>Browser: Return validation errors to form
+    else Valid Data
+        Controller->>Service: Request to create new user
         
-        alt חריגה במהלך יצירת משתמש
-            Service->>AdminHandler: זריקת InvalidRequestException
-            Note right of AdminHandler: בדיקת סוג הבקשה (API או דפדפן)
+        alt Exception during user creation
+            Service->>AdminHandler: Throw InvalidRequestException
+            Note right of AdminHandler: Check request type (API or browser)
             
-            alt בקשת API
-                AdminHandler->>AdminHandler: בניית תגובת JSON
-                AdminHandler-->>Browser: החזרת שגיאה כ-JSON (400)
-            else בקשת דפדפן
-                AdminHandler->>AdminHandler: הכנת מודל או הודעת שגיאה
-                AdminHandler-->>Browser: הצגת דף שגיאה או הפניה חזרה עם שגיאה
+            alt API Request
+                AdminHandler->>AdminHandler: Build JSON response
+                AdminHandler-->>Browser: Return error as JSON (400)
+            else Browser Request
+                AdminHandler->>AdminHandler: Prepare model or error message
+                AdminHandler-->>Browser: Display error page or redirect back with error
             end
             
-        else יצירת משתמש הצליחה
-            Service->>Service: הצפנת סיסמה
-            Service->>DB: שמירת משתמש חדש
-            DB-->>Service: אישור שמירה
-            Service-->>Controller: אישור הצלחה
-            Controller-->>Browser: הפניה ללוח בקרה עם הודעת הצלחה
+        else User creation successful
+            Service->>Service: Encrypt password
+            Service->>DB: Save new user
+            DB-->>Service: Confirm save
+            Service-->>Controller: Confirm success
+            Controller-->>Browser: Redirect to control panel with success message
         end
     end
     
-    Browser-->>Admin: הצגת התוצאה
+    Browser-->>Admin: Display result
 ```
 <div dir="rtl">
 
@@ -821,51 +821,51 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Admin as מנהל
-    participant Browser as דפדפן
+    participant Admin
+    participant Browser
     participant Controller as AdminController
     participant Service as RoleService
     participant AdminHandler as AdminExceptionHandler
-    participant DB as מסד נתונים
+    participant DB as Database
 
-    alt הוספת תפקיד
-        Admin->>Browser: מילוי טופס תפקיד חדש
-        Browser->>Controller: שליחת שם תפקיד
+    alt Add Role
+        Admin->>Browser: Fill new role form
+        Browser->>Controller: Submit role name
         Controller->>Service: addRole(roleName)
-        Service->>Service: הפיכה לאותיות גדולות
-        Service->>DB: בדיקה אם התפקיד קיים
+        Service->>Service: Convert to uppercase
+        Service->>DB: Check if role exists
 
-        alt תפקיד קיים
-            DB-->>Service: תפקיד קיים
-            Service->>AdminHandler: זריקת InvalidRequestException
-            AdminHandler-->>Browser: הצגת שגיאה מותאמת
-        else תפקיד לא קיים
-            Service->>DB: שמירת תפקיד חדש
-            DB-->>Service: אישור שמירה
-            Service-->>Controller: החזרת RoleDto
-            Controller-->>Browser: הפניה ללוח בקרה עם הודעת הצלחה
+        alt Role exists
+            DB-->>Service: Role exists
+            Service->>AdminHandler: Throw InvalidRequestException
+            AdminHandler-->>Browser: Display custom error
+        else Role doesn't exist
+            Service->>DB: Save new role
+            DB-->>Service: Confirm save
+            Service-->>Controller: Return RoleDto
+            Controller-->>Browser: Redirect to control panel with success message
         end
 
-    else מחיקת תפקיד
-        Admin->>Browser: לחיצה על כפתור מחיקה
-        Browser->>Browser: פתיחת מודל אישור מחיקה
-        Admin->>Browser: אישור מחיקה
+    else Delete Role
+        Admin->>Browser: Click delete button
+        Browser->>Browser: Open confirmation modal
+        Admin->>Browser: Confirm deletion
         Browser->>Controller: deleteRole(roleName)
         Controller->>Service: deleteRole(roleName)
-        Service->>DB: בדיקה אם התפקיד קיים
+        Service->>DB: Check if role exists
         
-        alt תפקיד לא קיים או משויך למשתמשים
-            Service->>AdminHandler: זריקת InvalidRequestException
-            AdminHandler-->>Browser: הצגת שגיאה מותאמת
-        else תפקיד קיים ולא משויך למשתמשים
-            Service->>DB: מחיקת תפקיד
-            DB-->>Service: אישור מחיקה
-            Service-->>Controller: אישור הצלחה
-            Controller-->>Browser: הפניה ללוח בקרה עם הודעת הצלחה
+        alt Role doesn't exist or is assigned to users
+            Service->>AdminHandler: Throw InvalidRequestException
+            AdminHandler-->>Browser: Display custom error
+        else Role exists and not assigned to users
+            Service->>DB: Delete role
+            DB-->>Service: Confirm deletion
+            Service-->>Controller: Confirm success
+            Controller-->>Browser: Redirect to control panel with success message
         end
     end
 
-    Browser-->>Admin: הצגת התוצאה
+    Browser-->>Admin: Display result
 ```
 <div dir="rtl">
 
@@ -881,19 +881,19 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Exception[חריגה במערכת] --> Check{האם החריגה נזרקה מבקר אדמין?}
-    Check -- כן --> Admin{האם קיים מטפל בAdminExceptionHandler?}
-    Check -- לא --> Global{האם קיים מטפל בGlobalExceptionHandler?}
-    
-    Admin -- כן --> AdminHandler[AdminExceptionHandler מטפל בחריגה]
-    Admin -- לא --> Global
-    
-    Global -- כן --> GlobalHandler[GlobalExceptionHandler מטפל בחריגה]
-    Global -- לא --> Default[טיפול ברירת מחדל של Spring]
-    
-    AdminHandler --> Response[תגובה מותאמת למשתמש]
-    GlobalHandler --> Response
-    Default --> GenericError[שגיאה כללית]
+   Exception[System Exception] --> Check{Was exception thrown from admin controller?}
+   Check -- Yes --> Admin{Is there a handler in AdminExceptionHandler?}
+   Check -- No --> Global{Is there a handler in GlobalExceptionHandler?}
+
+   Admin -- Yes --> AdminHandler[AdminExceptionHandler handles exception]
+   Admin -- No --> Global
+
+   Global -- Yes --> GlobalHandler[GlobalExceptionHandler handles exception]
+   Global -- No --> Default[Spring default exception handling]
+
+   AdminHandler --> Response[Custom response to user]
+   GlobalHandler --> Response
+   Default --> GenericError[Generic error]
 ```
 
 <div dir="rtl">
@@ -928,28 +928,28 @@ flowchart TD
 @AutoConfigureMockMvc
 public class ExceptionHandlersTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    
-    @Test
-    public void testAdminExceptionHandler() throws Exception {
-        // Test admin-specific exception handling
-        mockMvc.perform(post("/admin/add-user")
-                .param("username", "existingUser")
-                .param("password", "password"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("add-user"))
-                .andExpect(model().attributeExists("error"));
-    }
-    
-    @Test
-    public void testGlobalExceptionHandler() throws Exception {
-        // Test global exception handling
-        mockMvc.perform(get("/api/users/nonexistent"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value("error"))
-                .andExpect(jsonPath("$.details.type").value("Resource Not Found"));
-    }
+   @Autowired
+   private MockMvc mockMvc;
+
+   @Test
+   public void testAdminExceptionHandler() throws Exception {
+      // Test admin-specific exception handling
+      mockMvc.perform(post("/admin/add-user")
+                      .param("username", "existingUser")
+                      .param("password", "password"))
+              .andExpect(status().isOk())
+              .andExpect(view().name("add-user"))
+              .andExpect(model().attributeExists("error"));
+   }
+
+   @Test
+   public void testGlobalExceptionHandler() throws Exception {
+      // Test global exception handling
+      mockMvc.perform(get("/api/users/nonexistent"))
+              .andExpect(status().isNotFound())
+              .andExpect(jsonPath("$.status").value("error"))
+              .andExpect(jsonPath("$.details.type").value("Resource Not Found"));
+   }
 }
 ```
 
@@ -991,23 +991,23 @@ cd stage6
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id
-    private String username;
+   @Id
+   private String username;
 
-    @Column(nullable = false)
-    private String password;
+   @Column(nullable = false)
+   private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = @UniqueConstraint(
-                    columnNames = {"username", "role_id"}
-            )
-    )
-    @ToString.Exclude
-    private List<Role> roles = new ArrayList<>();
+   @ManyToMany(fetch = FetchType.EAGER)
+   @JoinTable(
+           name = "user_role",
+           joinColumns = @JoinColumn(name = "username"),
+           inverseJoinColumns = @JoinColumn(name = "role_id"),
+           uniqueConstraints = @UniqueConstraint(
+                   columnNames = {"username", "role_id"}
+           )
+   )
+   @ToString.Exclude
+   private List<Role> roles = new ArrayList<>();
 }
 ```
 <div dir="rtl">
@@ -1021,16 +1021,16 @@ public class User {
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
 
-    @Column(unique = true, nullable = false, length = 20)
-    private String name;
+   @Column(unique = true, nullable = false, length = 20)
+   private String name;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private List<User> users = new ArrayList<>();
+   @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+   @ToString.Exclude
+   private List<User> users = new ArrayList<>();
 }
 ```
 

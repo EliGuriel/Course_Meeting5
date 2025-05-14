@@ -28,7 +28,4 @@ public class Role {
 
     @ToString.Exclude
     private List<User> users = new ArrayList<>();
-
-
-
 }

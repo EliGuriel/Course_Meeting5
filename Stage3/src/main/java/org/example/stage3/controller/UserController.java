@@ -19,7 +19,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userServiceImpl;
+    private final UserService userService;
 
     @GetMapping("/hello")
     public ResponseEntity<StandardResponse> hello() {
@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<StandardResponse> status() {
 
         // Get the current username
-        String username = userServiceImpl.getCurrentUsername();
+        String username = userService.getCurrentUsername();
 
 
         StandardResponse response = new StandardResponse("success",
@@ -49,7 +49,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<StandardResponse> register(@Valid @RequestBody UserDto userDto) {
-        UserResponseDto registeredUser = userServiceImpl.registerUser(userDto);
+        UserResponseDto registeredUser = userService.registerUser(userDto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

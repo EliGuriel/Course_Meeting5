@@ -30,20 +30,19 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // TODO Stage5: allow resources access
+                        // TODO Stage5: allow resources access to authenticated users
                         // Allow access to static resources
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").authenticated()
 
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/role", "/register","/admin_home").hasRole("ADMIN")
+                        .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN")
                         .requestMatchers("/home").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
 
                 .formLogin(form -> form
 
                         /* TODO Stage5: custom login page ************* important *************
-                        // This will eliminate the default login page and use our custom login page
-                        // The login page is located in src/main/resources/templates/login.html
+                         * This will eliminate the default login page and use our custom login page
+                         * The login page is located in src/main/resources/templates/login.html
                          */
                         .loginPage("/login")
 

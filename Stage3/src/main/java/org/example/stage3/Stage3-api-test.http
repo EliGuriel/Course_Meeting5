@@ -1,0 +1,199 @@
+###
+### Spring Security Application API Test File for IntelliJ IDEA Ultimate
+### Simple Version Without Session Variables
+###
+
+/**
+
+Spring Security's default form login uses application/x-www-form-urlencoded format (username=x&password=y),
+not JSON. This is because the UsernamePasswordAuthenticationFilter extracts credentials from request
+parameters using request.getParameter(), which only works with form data. To support JSON login, you'd need
+to implement a custom filter that reads the request body as JSON and creates the authentication token manually.
+For testing REST APIs with form-based auth, always use x-www-form-urlencoded in your requests.
+*/
+
+### Initial environment setup
+@hostname = localhost
+@port = 8080
+@baseUrl = http://{{hostname}}:{{port}}
+@contentType = application/json
+
+### 1. Test Public Endpoints (No Authentication Required)
+
+### Test hello endpoint (should be accessible without login)
+GET {{baseUrl}}/hello
+
+### 2. Create Roles (No Authentication Required for this endpoint)
+
+### Login as admin user
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=admin
+
+
+### Create ADMIN role if not exists
+POST {{baseUrl}}/role
+Content-Type: {{contentType}}
+
+{
+  "roleName": "SYSTEM_ADMIN"
+}
+
+### Create USER role if not exists
+POST {{baseUrl}}/role
+Content-Type: {{contentType}}
+
+{
+  "roleName": "USER"
+}
+
+### Create MANAGER role
+POST {{baseUrl}}/role
+Content-Type: {{contentType}}
+
+{
+  "roleName": "MANAGER"
+}
+
+### 3. User Registration (No Authentication Required for this endpoint)
+
+### Register a regular user
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "user1",
+  "password": "user123",
+  "roles": ["USER"]
+}
+
+### Register an admin user
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "admin1",
+  "password": "admin123",
+  "roles": ["ADMIN"]
+}
+
+### Register a manager user
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "manager1",
+  "password": "manager123",
+  "roles": ["MANAGER", "USER"]
+}
+
+### 4. Authentication Tests
+
+### Login as regular user
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=user1&password=user123
+
+### Login as manager user
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=manager1&password=manager123
+
+### 5. Access Protected Endpoints
+### Copy the JSESSIONID from the login response and use it manually
+
+### Test home page with authentication
+GET {{baseUrl}}/home
+# Manually add cookie after login:
+# Cookie: JSESSIONID=your_session_id_here
+
+### Test status with authentication
+GET {{baseUrl}}/status
+# Manually add cookie after login:
+# Cookie: JSESSIONID=your_session_id_here
+
+### 6. Test Error Handling
+
+### Login with invalid credentials (should fail)
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=nonexistent&password=wrongpass
+
+### Test with malformed JSON (should return 400 Bad Request)
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "baduser",
+  "password": "pass123"
+  // Missing closing bracket and no roles specified
+
+### Test with invalid role (should return appropriate error)
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "roletest",
+  "password": "pass123",
+  "roles": ["NONEXISTENT_ROLE"]
+}
+
+### Test duplicate username (should return Conflict error)
+# Note: Run this twice to create the conflict
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "duplicate",
+  "password": "pass123",
+  "roles": ["USER"]
+}
+
+### 7. Logout Test
+
+### Logout (removes the session)
+POST {{baseUrl}}/logout
+# Manually add cookie after login:
+Cookie: JSESSIONID=4ECF777654D878E8B61021D7623AA3DA
+
+### 8. Complete Flow Test
+### This section demonstrates a complete workflow
+### Run each step manually and add cookies as needed
+
+### Step 1: Create a new role
+POST {{baseUrl}}/role
+Content-Type: {{contentType}}
+
+{
+  "roleName": "TESTER"
+}
+
+### Step 2: Register a new user with this role
+POST {{baseUrl}}/register
+Content-Type: {{contentType}}
+
+{
+  "username": "tester2",
+  "password": "test123",
+  "roles": ["TESTER"]
+}
+
+### Step 3: Login as the new user
+POST {{baseUrl}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=tester1&password=test123
+
+### Step 4: Check status with authentication
+GET {{baseUrl}}/status
+# Manually add cookie after login:
+# Cookie: JSESSIONID=your_session_id_here
+
+### Step 5: Logout
+POST {{baseUrl}}/logout
+# Manually add cookie after login:
+# Cookie: JSESSIONID=your_session_id_here

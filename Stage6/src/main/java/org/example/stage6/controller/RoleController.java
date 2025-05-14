@@ -17,11 +17,11 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class RoleController {
 
-    private final RoleService roleServiceIImplImpl;
+    private final RoleService roleService;
 
     @PostMapping("/role")
     public ResponseEntity<StandardResponse> createRole(@Valid @RequestBody RoleDto roleDto) {
-        RoleDto roleName = roleServiceIImplImpl.addRole(roleDto.getRoleName());
+        RoleDto roleName = roleService.addRole(roleDto.getRoleName());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

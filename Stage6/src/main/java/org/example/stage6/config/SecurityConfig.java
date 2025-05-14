@@ -56,8 +56,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Allow access to static resources
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
+                        // Allow access to static resources to authenticated users
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").authenticated()
 
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN")
