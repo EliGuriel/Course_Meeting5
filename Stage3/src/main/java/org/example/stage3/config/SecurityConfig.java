@@ -21,7 +21,9 @@ public class SecurityConfig {
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        // Using BCryptPasswordEncoder with strength of 12 for better security,
+        // default strength is 10, but 12 is recommended for better security
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
@@ -45,7 +47,9 @@ public class SecurityConfig {
                  */
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                // this line is not needed because spring security will use the default userDetailsService, but it's good to have it here for clarity
+
+                // this line is not needed because spring security will use the default userDetailsService,
+                // but it's good to have it here for clarity
                 .userDetailsService(userDetailsService)
 
                 /*

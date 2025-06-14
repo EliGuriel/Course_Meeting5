@@ -28,11 +28,14 @@ public class DataInitializer {
 
     @Bean
     public CommandLineRunner initData() {
-        return args -> {
-            log.info("Starting database initialization...");
-            initRoles();
-            initUsers();
-            log.info("Database initialization completed.");
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+                log.info("Starting database initialization...");
+                DataInitializer.this.initRoles();
+                DataInitializer.this.initUsers();
+                log.info("Database initialization completed.");
+            }
         };
     }
 
