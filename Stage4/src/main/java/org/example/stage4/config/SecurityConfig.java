@@ -28,8 +28,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN") // הרשאה לפי ROLE_ADMIN
-                        .requestMatchers("/home").hasAnyRole("USER", "ADMIN") // הרשאה לפי ROLE_USER או ROLE_ADMIN
+                        .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN") //  ROLE_ADMIN
+                        .requestMatchers("/home").hasAnyRole("USER", "ADMIN") //  ROLE_USER or ROLE_ADMIN
                         .anyRequest().authenticated())
 
                 // login processing, logout processing, session management
