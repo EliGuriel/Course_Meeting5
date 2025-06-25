@@ -41,9 +41,10 @@ public class SecurityConfig {
                 .formLogin(form -> form
 
                         /* TODO Stage5: custom login page ************* important *************
-                         * This will eliminate the default login page and use our custom login page
-                         * The login page is located in src/main/resources/templates/login.html
-                         */
+                        // This will eliminate the default login page and use our custom login page
+                        // The /login URL is handled by LoginController which returns "login" template
+                        // The actual template file is located in src/main/resources/templates/login.html
+                        */
                         .loginPage("/login")
 
                         .loginProcessingUrl("/login")

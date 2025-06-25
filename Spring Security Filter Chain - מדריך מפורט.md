@@ -6,7 +6,7 @@
 
 ה-Filter Chain של Spring Security הוא רצף של filters שכל בקשת HTTP עוברת דרכם לפני שהיא מגיעה לcontroller שלך. כל filter אחראי על חלק מסוים באבטחה - אימות, הרשאה, הגנות וכו'.
 
-במערכת שלך, כאשר משתמש ניגש ל-`/register` או `/role`, הבקשה עוברת דרך שרשרת של filters שבודקים: האם המשתמש מאומת? האם יש לו הרשאות? האם זו התקפה?
+במערכת שלך, כאשר משתמש ניגש ל-`register/` או `role/`, הבקשה עוברת דרך שרשרת של filters שבודקים: האם המשתמש מאומת? האם יש לו הרשאות? האם זו התקפה?
 
 ## ארכיטקטורת Filter Chain
 
@@ -20,7 +20,7 @@ graph TD
     D --> E[Username Password Authentication Filter]
     E --> F[Exception Translation Filter]
     F --> G[Filter Security Interceptor]
-    G --> H[Your Controller]
+    G --> H[Application Controller]
     
     H --> I[Controller Response]
     I --> J[Response Filters]
@@ -33,9 +33,9 @@ graph TD
 
 <div dir="rtl">
 
-## Filter Chain במערכת שלך
+## Filter Chain במערכת
 
-בקובץ `SecurityConfig.java`, אתה מגדיר את ה-Filter Chain:
+בקובץ `SecurityConfig.java`, מגדירים את ה-Filter Chain:
 
 </div>
 
@@ -66,16 +66,20 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 <div dir="rtl">
 
-## הfilters העיקריים במערכת שלך
+## הfilters העיקריים במערכת 
 
 </div>
 
 ```mermaid
 graph LR
-    A[SecurityContextPersistenceFilter] --> B[LogoutFilter]
-    B --> C[UsernamePasswordAuthenticationFilter] 
-    C --> D[ExceptionTranslationFilter]
-    D --> E[FilterSecurityInterceptor]
+   
+    subgraph name
+        A[SecurityContextPersistenceFilter] --> B[LogoutFilter]
+        B --> C[UsernamePasswordAuthenticationFilter]
+        C --> D[ExceptionTranslationFilter]
+        D --> E[FilterSecurityInterceptor]
+    end
+    
     E --> F[UserController/RoleController]
     
 %%    style A fill:#e3f2fd
@@ -89,17 +93,17 @@ graph LR
 <div dir="rtl">
 
 ### 1. SecurityContextPersistenceFilter
-**תפקיד:** שומר ומטען את פרטי האימות מהsession
+**תפקיד:** שומר וטוען את פרטי האימות מה-session
 
-**איך זה עובד במערכת שלך:**
-- כשמשתמש מתחבר ב-`/login`, הfilter שומר את פרטי האימות בsession
-- בבקשות הבאות, הוא מטען את הפרטים מהsession
+**איך זה עובד במערכת :**
+- כשמשתמש מתחבר ב-`login/`, הfilter שומר את פרטי האימות בsession
+- בבקשות הבאות, הוא טוען את הפרטים מה-session
 - כך המשתמש לא צריך להתחבר שוב בכל בקשה
 
 ### 2. LogoutFilter
 **תפקיד:** מטפל בהתנתקות
 
-**התצורה שלך:**
+**בתצורה הקיימת:**
 
 </div>
 
@@ -116,7 +120,7 @@ graph LR
 ### 3. UsernamePasswordAuthenticationFilter
 **תפקיד:** מטפל בהתחברות עם שם משתמש וסיסמה
 
-**התצורה שלך:**
+**בתצורה הקיימת:**
 
 </div>
 
@@ -133,7 +137,7 @@ graph LR
 ### 4. FilterSecurityInterceptor
 **תפקיד:** בודק הרשאות לכל endpoint
 
-**הכללים שלך:**
+**הכללים הקיימים כרגע:**
 
 </div>
 
@@ -219,24 +223,26 @@ graph TD
 
 ```mermaid
 graph LR
-    A[/role] --> B[ADMIN role required]
-    C[/register] --> B
-    D[/hello] --> E[No authentication needed]
-    F[/home] --> G[Any authenticated user]
-    H[/status] --> G
-    I[/logout] --> E
-    J[/login] --> E
-    
-%%    style B fill:#ffcccc
-%%    style E fill:#ccffcc
-%%    style G fill:#ffffcc
+    A["/role"] --> B["ADMIN role required"]
+    C["/register"] --> B
+    K["/admin_home"] --> B
+    D["/hello"] --> E["No authentication needed"]
+    I["/logout"] --> E
+    J["/login"] --> E
+    F["/home"] --> G["Any authenticated user<br/>(USER or ADMIN)"]
+    H["/status"] --> G
+    L["/css/**<br/>/js/**<br/>/images/**<br/>/static/**"] --> E
+
+    style B fill:#012345
+    style E fill:#0ca000  
+    style G fill:#0aa0a0
 ```
 
 <div dir="rtl">
 
 ## CustomUserDetailsService filter chain
 
-ה-`CustomUserDetailsService` שלך מתחבר לfilter chain כך:
+ה-`CustomUserDetailsService` מתחבר ל-filter chain כך:
 
 </div>
 
@@ -274,7 +280,7 @@ sequenceDiagram
 
 ## המרת תפקידים ל-Spring Authorities
 
-בשירות שלך:
+במחלקת השירות CustomUserDetailsService הקיים:
 
 </div>
 
@@ -291,7 +297,7 @@ private Collection<? extends GrantedAuthority> mapRolesToAuthorities(List<Role> 
 
 **למה הקידומת "ROLE_"?**
 - Spring Security דורש את הקידומת הזו
-- כשאתה כותב `.hasRole("ADMIN")`, Spring מחפש authority בשם "ROLE_ADMIN"
+- כאשר כותבים `.hasRole("ADMIN")`, ספרינג מחפש authority בשם "ROLE_ADMIN"
 - לכן התפקיד "ADMIN" במסד הנתונים הופך ל-"ROLE_ADMIN" ב-Spring
 
 ## דוגמאות זרימה לפי endpoint שונים
@@ -362,9 +368,9 @@ graph TD
 
 <div dir="rtl">
 
-## Session Management והfilter chain
+## Session Management וה-filter chain
 
-התצורה שלך:
+התצורה הקיימת:
 
 </div>
 
@@ -398,7 +404,7 @@ graph LR
 
 ## הגנות שהfilter chain מספק
 
-### 1. הגנת CSRF (מושבת במערכת שלך)
+### 1. הגנת CSRF (מושבת במערכת בשלב זה)
 
 </div>
 
@@ -413,9 +419,14 @@ graph LR
 - בסביבת production מומלץ להפעיל
 
 ### 2. אבטחת Session
+
+</div>
+
 - Session fixation protection (ברירת מחדל)
-- Session timeout (configurable)
+- Session timeout (configurable) --> application.properties session.timeout=30m
 - Cookie security (JSESSIONID)
+
+<div dir="rtl">
 
 ### 3. Exception Handling
 כשמשתמש מנסה לגשת לresource שאין לו הרשאה:
@@ -435,9 +446,9 @@ graph TD
 
 <div dir="rtl">
 
-## DataInitializer והfilter chain
+## DataInitializer וה-filter chain
 
-ה-`DataInitializer` שלך יוצר משתמשים שמתחברים לfilter chain:
+ה-`DataInitializer` יוצר משתמשים שמתחברים ל-filter chain:
 
 </div>
 
@@ -487,14 +498,14 @@ sequenceDiagram
 
 <div dir="rtl">
 
-## סיכום - יתרונות הfilter chain
+## לסיכום - יתרונות הfilter chain
 
 1. **מודולריות** - כל filter אחראי על חלק מסוים
 2. **גמישות** - אפשר להוסיף/להסיר filters
 3. **ביצועים** - filters רצים רק כשצריך
 4. **בטיחות** - מספר שכבות הגנה
-5. **תחזוקה** - קל לשנות הרשאות ללא שינוי בcontrollers
+5. **תחזוקה** - קל לשנות הרשאות ללא שינוי ב-controllers
 
-המערכת שלך מנצלת את כל היתרונות האלה - משתמש 'admin' יכול ליצור תפקידים ולהרשם משתמשים, בעוד משתמש רגיל יכול לגשת רק לendpoints בסיסיים.
+המערכת מנצלת את כל היתרונות האלה - משתמש 'admin' יכול ליצור תפקידים ולהרשם משתמשים, בעוד משתמש רגיל יכול לגשת רק לendpoints בסיסיים.
 
 </div>
