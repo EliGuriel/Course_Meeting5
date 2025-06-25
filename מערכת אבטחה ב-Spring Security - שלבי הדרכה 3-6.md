@@ -90,11 +90,13 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 ## שלב 4 - ניהול הרשאות מתקדם
 
 ### שינויים מרכזיים
-- הוספת `CustomAuthorizationManager` לבקרת גישה מותאמת אישית
 - הרחבת מערכת ההרשאות
 - הוספת דף אדמין (admin_home)
 
 ### תהליך אימות הרשאות
+
+</div>
+
 
 ```mermaid
 sequenceDiagram
@@ -115,24 +117,6 @@ sequenceDiagram
     End
 ```
 
-### CustomAuthorizationManager
-
-</div>
-
-```java
-public AuthorizationManager<RequestAuthorizationContext> hasRole(String role) {
-    return (authenticationSupplier, context) -> {
-        Authentication authentication = authenticationSupplier.get();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return new AuthorizationDecision(false);
-        }
-        
-        boolean hasRole = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals(role));
-        return new AuthorizationDecision(hasRole);
-    };
-}
-```
 
 <div dir="rtl">
 
@@ -141,12 +125,10 @@ public AuthorizationManager<RequestAuthorizationContext> hasRole(String role) {
 </div>
 
 ```java
-.authorizeHttpRequests(auth -> auth
-    .requestMatchers("/login").permitAll()
-    .requestMatchers("/role", "/register", "/admin_home")
-        .access(customAuthorizationManager.hasRole("ROLE_ADMIN"))
-    .requestMatchers("/home").hasAnyRole("USER", "ADMIN")
-    .anyRequest().authenticated())
+    .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN") //  ROLE_ADMIN
+                        .requestMatchers("/home").hasAnyRole("USER", "ADMIN") //  ROLE_USER or ROLE_ADMIN
+                        .anyRequest().authenticated())
 ```
 
 <div dir="rtl">
@@ -326,8 +308,8 @@ graph LR
 מערכת אבטחה של Spring Security מתפתחת בארבעה שלבים מרכזיים:
 
 1. **שלב 3**: הקמת בסיס עם אימות והרשאות בסיסיות
-2. **שלב 4**: הרחבת יכולות הרשאה בעזרת `CustomAuthorizationManager`
-3. **שלב 5**: מעבר מAPI ליישום web עם דפי HTML
+2. **שלב 4**: הרחבת יכולות הרשאה 
+3. **שלב 5**: מעבר מ-API ליישום web עם דפי HTML
 4. **שלב 6**: הוספת שכבות אבטחה מתקדמות להגנה מפני התקפות נפוצות
 
 המערכת הסופית מספקת הגנה מקיפה מפני מגוון רחב של איומי אבטחה תוך שמירה על חווית משתמש נוחה.
