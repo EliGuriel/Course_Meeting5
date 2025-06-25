@@ -144,9 +144,9 @@ sequenceDiagram
 
 <div dir="rtl">
 
-## דוגמה מהמערכת שלך
+## דוגמה מהמערכת 
 
-כך זה נראה ב-LoginController שלך:
+כך זה נראה ב-LoginController :
 
 </div>
 
@@ -168,7 +168,7 @@ public class LoginController {
 
 <div dir="rtl">
 
-## תהליך הRender המלא
+## תהליך ה-Render המלא
 
 </div>
 
@@ -195,7 +195,7 @@ K --> N[Complete HTML Document]
 M --> N
 N --> O[Send to Browser]
 
-style G fill:#01a9d5
+style G fill:#023567
 style N fill:#012345
 ```
 
@@ -223,11 +223,11 @@ style N fill:#012345
 
 <div dir="rtl">
 
-**שימו לב:** כל האטריביוטים `th:` נעלמו! Thymeleaf מעבד אותם ומחזיר HTML רגיל.
+**שים לב:** כל האטריביוטים `:th` נעלמו! Thymeleaf מעבד אותם ומחזיר HTML רגיל.
 
 ## Thymeleaf Expressions מפורט
 
-### 1. Variable Expressions: `${...}`
+### 1. Variable Expressions: `{...}$`
 
 </div>
 
@@ -240,7 +240,7 @@ style N fill:#012345
 
 <div dir="rtl">
 
-### 2. Utility Objects: `#...`
+### 2. Utility Objects: `...#
 
 </div>
 
@@ -259,7 +259,7 @@ style N fill:#012345
 
 <div dir="rtl">
 
-### 3. Selection Expressions: `*{...}`
+### 3. Selection Expressions: `{...}*`
 
 </div>
 
@@ -383,8 +383,8 @@ graph TD
     F[Subsequent Requests] --> G[Use Cached Template]
     G --> E
     
-    style D fill:#ffffcc
-    style G fill:#e8f5e8
+    style D fill:#012345
+    style G fill:#345678
 ```
 
 <div dir="rtl">
@@ -414,7 +414,7 @@ spring.thymeleaf.servlet.content-type=text/html
 | **Performance** | מהיר לעמוד ראשון | מהיר לאינטראקציות |
 | **Complexity** | פשוט יותר | דורש JavaScript framework |
 
-## Debug Tips לThymeleaf
+## Debug Tips ל-Thymeleaf
 
 ### 1. הצגת משתנים:
 
@@ -498,9 +498,9 @@ spring.thymeleaf.servlet.content-type=text/html
 
 <div dir="rtl">
 
-## סיכום
+## לסיכום
 
-הקוד שהצגת הוא דוגמה מושלמת לשימוש ב-Thymeleaf עם תמיכה מלאה בעברית:
+הקוד הוא דוגמה מושלמת לשימוש ב-Thymeleaf עם תמיכה מלאה בעברית:
 
 1. **DOCTYPE** - מגדיר HTML5 תקני
 2. **Thymeleaf namespace** - מאפשר שימוש ב-th: attributes
