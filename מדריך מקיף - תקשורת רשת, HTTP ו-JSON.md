@@ -851,7 +851,7 @@ graph TD
 
 ## HTTP Headers Analysis
 
-### דיסקציה של Headers:
+### Headers:
 
 </div>
 
@@ -876,7 +876,7 @@ Content-Length: 156
 
 ## מה קורה כשיש שגיאה ברמת Bytes?
 
-### תרחיש: בעיה בencoding
+### תרחיש: בעיה ב-encoding
 
 </div>
 
@@ -1091,7 +1091,7 @@ graph LR
 
 ## Performance והשפעה על הרשת
 
-### גודל הודעות בבytes:
+### גודל הודעות :
 
 </div>
 
@@ -1164,7 +1164,7 @@ Spring Boot כבר עושה את כל זה אוטומטית! הוא מגדיר U
 3. **Spring** - מקבל טקסט, Jackson ממיר לאובייקטי Java
 4. **התשובה** - Java objects → JSON string → דרך הקו → JavaScript objects
 
-זה למה אנחנו צריכים הערות כמו `@RequestBody` ו-`@ResponseBody` ב-Spring - הן אומרות ל-framework לבצע המרות אוטומטיות בין אובייקטים לטקסט JSON.
+זה למה אנחנו צריכים הערות כמו `RequestBody@` ו-`ResponseBody@` ב-Spring - הן אומרות ל-framework לבצע המרות אוטומטיות בין אובייקטים לטקסט JSON.
 
 הבנת התהליך הזה חיונית לdebug בעיות רשת, אופטימיזציה של ביצועים, ופתרון בעיות encoding. במערכת , זה קורה אלפי פעמים ביום - כל לחיצה, כל בקשה, כל תשובה.
 
