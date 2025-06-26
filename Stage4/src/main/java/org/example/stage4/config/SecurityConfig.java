@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/role", "/register", "/admin_home").hasRole("ADMIN") //  ROLE_ADMIN
                         .requestMatchers("/home").hasAnyRole("USER", "ADMIN") //  ROLE_USER or ROLE_ADMIN
+                        .requestMatchers("/debug-session").authenticated()
                         .anyRequest().authenticated())
 
                 // login processing, logout processing, session management

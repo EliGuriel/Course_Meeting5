@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserDetails userDetails =  new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
-                user.getPassword(), // the checking of the password is done by Spring Security, no need to do it manually
+                user.getPassword(), // Spring Security does the checking of the password, no need to do it manually
                 mapRolesToAuthorities(user.getRoles())
         );
         // if the user is locked (disabled), throw an exception
