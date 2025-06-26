@@ -37,12 +37,14 @@
 **`xmlns:th="http://www.thymeleaf.org"`**
 - מגדיר namespace ל-Thymeleaf
 - מאפשר שימוש באטריביוטים מיוחדים כמו `th:text`, `th:if` וכו'
-- זה אומר לכלי הפיתוח שהתחילית `th:` שייכת ל-Thymeleaf
+- זה אומר לכלי הפיתוח שהתחילית `:th` שייכת ל-Thymeleaf
+- 
 
-**`dir="rtl"`**
+**`dir="rtl"`** 
 - מגדיר כיוון הטקסט מימין לשמאל (Right-To-Left)
 - חיוני לשפות כמו עברית וערבית
 - משפיע על סידור הטקסט, תפריטים, כפתורים וכל האלמנטים
+- 
 
 **`lang="he"`**
 - מגדיר שהשפה העיקרית של הדף היא עברית
@@ -223,7 +225,7 @@ style N fill:#012345
 
 <div dir="rtl">
 
-**שים לב:** כל האטריביוטים `:th` נעלמו! Thymeleaf מעבד אותם ומחזיר HTML רגיל.
+**שימו לב:** כל האטריביוטים `:th` נעלמו! Thymeleaf מעבד אותם ומחזיר HTML רגיל.
 
 ## Thymeleaf Expressions מפורט
 
@@ -314,7 +316,7 @@ graph LR
     D --> D1[Scrollbars appear on left]
     E --> E1[Labels align to right of inputs]
     
-    style A fill:#e3f2fd
+    style A fill:#012345
 ```
 
 <div dir="rtl">
