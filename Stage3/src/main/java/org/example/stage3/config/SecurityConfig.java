@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -39,6 +39,7 @@ public class SecurityConfig {
                 authorization rules
                  */
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/hello/**").permitAll()
                         .requestMatchers("role", "/register").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
@@ -50,6 +51,9 @@ public class SecurityConfig {
 
                 // this line is not needed because spring security will use the default userDetailsService,
                 // but it's good to have it here for clarity
+
+                // AAA - Authentication, Authorization, and Accounting
+
                 .userDetailsService(userDetailsService)
 
                 /*

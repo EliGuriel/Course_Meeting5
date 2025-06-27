@@ -52,7 +52,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
         return roles.stream()
-                // add the prefix "ROLE_" to the role name, it is required by Spring Security
+                // add the prefix "ROLE_" to the role name, it is required by Spring Security, ADMIN=> ROLE_ADMIN
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                 .collect(Collectors.toList());
     }

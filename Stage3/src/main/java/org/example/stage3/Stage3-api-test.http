@@ -41,7 +41,7 @@ Content-Type: {{contentType}}
 }
 
 ### Create USER role if not exists
-POST {{baseUrl}}/role
+GET {{baseUrl}}/logout
 Content-Type: {{contentType}}
 
 {
