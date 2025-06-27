@@ -1502,27 +1502,39 @@ public class ProductController {
 
 </div>
 
-```http
-POST /api/getProducts          ← לא RESTful: GET operation עם POST
-POST /api/updateProduct/123    ← לא RESTful: UPDATE operation עם POST  
-GET /api/deleteProduct/123     ← לא RESTful: DELETE operation עם GET
-POST /api/products/search      ← אפשר, אבל לא אידאלי
-```
 
+```http
+POST /api/getProducts          
+POST /api/updateProduct/123    
+GET /api/deleteProduct/123     
+POST /api/products/search      
+```
 <div dir="rtl">
 
-#### הגישה ה-RESTful הנכונה:
+**מה הבעיות:**
+- `POST /api/getProducts` - לא RESTful: פעולת GET עם POST
+- `POST /api/updateProduct/123` - לא RESTful: פעולת UPDATE עם POST
+- `GET /api/deleteProduct/123` - לא RESTful: פעולת DELETE עם GET
+- `POST /api/products/search` - אפשר, אבל לא אידאלי
+
+**הגישה ה-RESTful הנכונה:**
 
 </div>
 
 ```http
-GET /api/products              ← RESTful: קריאה עם GET
-PUT /api/products/123          ← RESTful: עדכון עם PUT
-DELETE /api/products/123       ← RESTful: מחיקה עם DELETE
-GET /api/products?search=query ← RESTful: חיפוש עם query parameters
+GET /api/products              
+PUT /api/products/123          
+DELETE /api/products/123       
+GET /api/products?search=query 
 ```
 
 <div dir="rtl">
+
+**למה זה נכון:**
+- `GET /api/products` - RESTful: קריאה עם GET
+- `PUT /api/products/123` - RESTful: עדכון עם PUT
+- `DELETE /api/products/123` - RESTful: מחיקה עם DELETE
+- `GET /api/products?search=query` - RESTful: חיפוש עם query parameters
 
 ## HTTP Headers ב-REST
 
